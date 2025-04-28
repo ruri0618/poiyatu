@@ -31,17 +31,15 @@
   <h2 id="result" style="margin-top: 30px; white-space: pre-line;">ここに結果が表示されます</h2>
 
 <script>
-// ここからスクリプト開始
-
 const members = [
-  "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生", "櫻井梨央", "井上春華", "弓桁朱琴",
-  "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花",
-  "段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲", "石山咲良", "遠藤彩加里",
-  "川嶋美楓", "谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃",
-  "石井泉羽", "村田結生", "土居楓奏", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波",
-  "清野桃々姫", "平井美葉", "里吉うたの", "小林萌花", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫",
-  "西﨑美空", "北原もも", "筒井澪心", "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ",
-  "島川波菜", "上村麗菜", "相馬優芽"
+    "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生", "櫻井梨央", "井上春華", "弓桁朱琴",
+    "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花",
+    "段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲", "石山咲良", "遠藤彩加里",
+    "川嶋美楓", "谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃",
+    "石井泉羽", "村田結生", "土居楓奏", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波",
+    "清野桃々姫", "平井美葉", "里吉うたの", "小林萌花", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫",
+    "西﨑美空", "北原もも", "筒井澪心", "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ",
+    "島川波菜", "上村麗菜", "相馬優芽"
 ];
 
 const rarities = [
@@ -80,23 +78,23 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     else if (rarity === "R") item = "キーホルダー";
     else if (rarity === "SR") item = "BIGアクリルスタンド";
 
-    let displayText = rarity === "SR" ? `<span class='rainbow-text'>${rarity}：${member} - ${item}</span>` : `${rarity}：${member} - ${item}`;
-
-    const resultItem = { rarity: rarityTag, member: member, item: item, display: displayText };
+    const resultItem = { rarity: rarityTag, member: member, item: item };
     results.push(resultItem);
 
-    if (untilSR && rarity === "SR") {
-      if (!targetMember || member === targetMember) {
-        srHit = true;
-        if (targetMember && member === targetMember) {
-          oshiResult = resultItem;
-        }
-        break;
+    if (untilSR && rarity === "SR" && (!targetMember || member === targetMember)) {
+      srHit = true;
+      if (targetMember && member === targetMember) {
+        oshiResult = resultItem;
       }
+      break;
     }
 
     count++;
   } while (count < times || untilSR);
+
+  if (oshiResult) {
+    results = results.filter(r => !(r.member === oshiResult.member && r.rarity === oshiResult.rarity));
+  }
 
   results.sort((a, b) => {
     const rarityOrder = { "SR": 0, "R": 1, "缶バッジ": 2, "ステッカー": 3 };
@@ -106,12 +104,11 @@ function drawGacha(times, untilSR = false, targetMember = null) {
   });
 
   if (oshiResult) {
-    results = results.filter(r => !(r.member === oshiResult.member && r.rarity === oshiResult.rarity));
     oshiResult.display = `<span style="font-size:24px; font-weight:bold; color:#FF69B4;">${oshiResult.rarity}：${oshiResult.member} - ${oshiResult.item}</span>`;
     results.unshift(oshiResult);
   }
 
-  let displayText = results.map(r => r.display).join("<br>");
+  let displayText = results.map(r => r.display || `${r.rarity}：${r.member} - ${r.item}`).join("<br>");
   if (untilSR && srHit) {
     const totalCost = count * 500;
     displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
@@ -137,7 +134,6 @@ document.getElementById("oshiGachaButton").addEventListener("click", () => {
   }
   drawGacha(1, true, corrected);
 });
-
 </script>
 </body>
 </html>
