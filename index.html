@@ -92,17 +92,28 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     count++;
   } while (count < times || untilSR);
 
+  // 推しを除外
   if (oshiResult) {
     results = results.filter(r => !(r.member === oshiResult.member && r.rarity === oshiResult.rarity));
   }
 
+  // ソート（レアリティ → Nアイテム順 → メンバー順）
   results.sort((a, b) => {
     const rarityOrder = { "SR": 0, "R": 1, "缶バッジ": 2, "ステッカー": 3 };
-    if (rarityOrder[a.rarity] !== rarityOrder[b.rarity]) return rarityOrder[a.rarity] - rarityOrder[b.rarity];
-    if (a.rarity === "缶バッジ" || a.rarity === "ステッカー") return a.rarity.localeCompare(b.rarity);
+    const aOrder = rarityOrder[a.rarity];
+    const bOrder = rarityOrder[b.rarity];
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    // Nのアイテム内で缶バッジ→ステッカー
+    if (a.rarity === "缶バッジ" || a.rarity === "ステッカー") {
+      const itemOrder = { "缶バッジ": 0, "ステッカー": 1 };
+      const cmp = itemOrder[a.rarity] - itemOrder[b.rarity];
+      return cmp !== 0 ? cmp : members.indexOf(a.member) - members.indexOf(b.member);
+    }
+    // SR・Rはメンバー順
     return members.indexOf(a.member) - members.indexOf(b.member);
   });
 
+  // display生成
   results = results.map(r => {
     if (r.rarity === "SR") {
       return { ...r, display: `<span class="rainbow-text">${r.rarity}：${r.member} - ${r.item}</span>` };
@@ -111,20 +122,22 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     }
   });
 
+  // 推しを一番上に強調
   if (oshiResult) {
     oshiResult.display = `<span style="font-size:24px; font-weight:bold; color:#FF69B4;">${oshiResult.rarity}：${oshiResult.member} - ${oshiResult.item}</span>`;
     results.unshift(oshiResult);
   }
 
+  // 結果表示
   let displayText = results.map(r => r.display).join("<br>");
   if (untilSR && srHit) {
     const totalCost = count * 500;
     displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
   }
-
   document.getElementById("result").innerHTML = displayText;
 }
 
+// ボタンイベント設定
 document.getElementById("gachaButton").addEventListener("click", () => drawGacha(1));
 document.getElementById("gacha10Button").addEventListener("click", () => drawGacha(10));
 document.getElementById("gacha100Button").addEventListener("click", () => drawGacha(100));
