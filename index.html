@@ -51,7 +51,7 @@ const rarities = [
 function getRandomRarity() {
   let rand = Math.random() * 100;
   let sum = 0;
-  for (let rarity of rarities) {
+  for (const rarity of rarities) {
     sum += rarity.rate;
     if (rand <= sum) return rarity.type;
   }
