@@ -1,34 +1,77 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>ハロプロ モバガチャ2025</title>
-<style>
-/* （CSSは今のままでOKなので省略） */
-body { font-family: Arial, sans-serif; text-align: center; background: #000; color: #fff; padding: 20px; }
-.group-buttons { margin-bottom: 20px; }
-.group-buttons button { margin: 5px; padding: 10px 15px; font-size: 14px; }
-.video-frame { width: 100%; max-width: 800px; margin: 20px auto; position: relative; }
-.video-frame video { width: 100%; border: 2px solid #fff; }
-.overlay { position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:28px; font-weight:bold; color:#fff; text-shadow:2px 2px 4px #000; opacity:0; transition:opacity 1s; pointer-events: none; }
-.counter-overlay { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.6); padding:6px 12px; border-radius:8px; }
-.video-controls { margin-top: 10px; }
-.video-controls button { margin: 0 5px; padding:8px 12px; font-size:14px; }
-.white-text { color: white; }
-.gold-text { color: gold; }
-.rainbow-text { background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; color: transparent; animation: rainbow 3s infinite; }
-@keyframes rainbow { 0%{filter:hue-rotate(0deg);} 100%{filter:hue-rotate(360deg);} }
-#history { display: none; margin-top: 20px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: left; max-width: 600px; margin-left:auto; margin-right:auto; }
-#itemModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 999; }
-#itemModal .modal-content { background: #222; padding: 20px; border-radius:8px; width:90%; max-width:500px; text-align:left; }
-#itemModal textarea, #itemModal input { width: 100%; margin-top: 5px; padding: 6px; background: #333; border: 1px solid #555; color: white; }
-#itemModal button { margin-top: 10px; padding: 8px 12px; }
-</style>
+  <meta charset="UTF-8">
+  <title>ハロプロ モバガチャ2025</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #000; color: #fff; }
+    .group-buttons { margin-bottom: 20px; }
+    .group-buttons button { margin: 5px; padding: 10px 15px; font-size: 14px; cursor: pointer; }
+    .video-frame {
+      width: 135%; max-width: 900px; aspect-ratio: 16/9;
+      background: #000; position: relative; overflow: visible;
+      margin: 0 auto 120px; display: block;
+    }
+    .video-frame video { width: 100%; height: 100%; object-fit: cover; z-index: 0; position: relative; }
+    .overlay {
+      position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      font-size:30px; font-weight:bold; color:#fff; text-shadow:2px 2px 4px #000;
+      white-space:pre-line; pointer-events:none; opacity:0; transition:opacity 1s; z-index:2;
+    }
+    .counter-overlay {
+      position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,0.6); color:#fff; padding:6px 12px; border-radius:8px; font-size:16px; z-index:2;
+    }
+    .video-controls {
+      position:absolute; bottom:-60px; left:50%; transform:translateX(-50%); z-index:2;
+    }
+    .video-controls button {
+      margin:0 8px; padding:8px 16px; font-size:14px; cursor:pointer;
+    }
+    .white-text { color:white; }
+    .gold-text  { color:gold; }
+    .rainbow-text {
+      background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
+      -webkit-background-clip: text; color:transparent;
+      animation: rainbow 3s infinite;
+    }
+    #history {
+      display:none; margin:20px auto; max-width:600px;
+      background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
+    }
+    /* モーダル */
+    #itemModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width:100%; height:100%;
+      background: rgba(0,0,0,0.8);
+      align-items: center; justify-content: center;
+      z-index: 999;
+    }
+    #itemModal .modal-content {
+      background: #222; padding: 20px; border-radius:8px;
+      width: 90%; max-width: 500px; color: #fff; text-align: left;
+    }
+    #itemModal h2 { margin-top: 0; font-size: 20px; }
+    .item-group { margin-bottom: 16px; }
+    .item-group h3 { margin-bottom: 8px; font-size: 16px; }
+    .item-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .item-list input {
+      flex: 1 1 45%; padding: 6px 8px; border:1px solid #444; border-radius:4px;
+      background: #333; color: #fff;
+    }
+    .item-group button.add { margin-top: 4px; padding:4px 8px; font-size:12px; cursor:pointer; }
+    .modal-actions { text-align: right; margin-top: 12px; }
+    .modal-actions button {
+      margin-left: 8px; padding:6px 12px; font-size:14px; cursor:pointer;
+    }
+  </style>
 </head>
 <body>
 
-<h1>✨ハロプロモバガチャ2025✨</h1>
+<h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
 
+<!-- グループ選択ボタン -->
 <div class="group-buttons">
   <button onclick="selectGroup('all')">全員</button>
   <button onclick="selectGroup('momusu')">モーニング娘。</button>
@@ -44,38 +87,44 @@ body { font-family: Arial, sans-serif; text-align: center; background: #000; col
   <video id="gachaVideo" src="scene_1.mp4" autoplay loop muted playsinline></video>
   <div id="overlay" class="overlay"></div>
   <div id="counter" class="counter-overlay"></div>
-</div>
-
-<div class="video-controls">
-  <button id="showHistoryButton">獲得履歴表示</button>
-  <button id="editItemsButton">出現アイテム編集</button>
-  <button id="resetButton">リセット</button>
+  <div class="video-controls">
+    <button id="showHistoryButton">獲得アイテム一覧</button>
+    <button id="editItemsButton">出現アイテム編集</button>
+    <button id="resetButton">リセット</button>
+  </div>
 </div>
 
 <div id="history"></div>
 
+<!-- アイテム編集モーダル -->
 <div id="itemModal">
   <div class="modal-content">
     <h2>出現アイテム編集</h2>
+
+    <!-- スペシャルモードのチェックボックス -->
+    <div class="item-group">
+      <label for="specialMode">スペシャルモード</label>
+      <input type="checkbox" id="specialMode">
+    </div>
+
     <div class="item-group" data-rarity="N">
       <h3>Nアイテム</h3>
       <div class="item-list" id="list-N"></div>
-      <button class="add" data-rarity="N">＋Nアイテム追加</button>
+      <button class="add" data-rarity="N">＋Nアイテムを追加</button>
     </div>
+
     <div class="item-group" data-rarity="R">
       <h3>Rアイテム</h3>
       <div class="item-list" id="list-R"></div>
-      <button class="add" data-rarity="R">＋Rアイテム追加</button>
+      <button class="add" data-rarity="R">＋Rアイテムを追加</button>
     </div>
+
     <div class="item-group" data-rarity="SR">
       <h3>SRアイテム</h3>
       <div class="item-list" id="list-SR"></div>
-      <button class="add" data-rarity="SR">＋SRアイテム追加</button>
+      <button class="add" data-rarity="SR">＋SRアイテムを追加</button>
     </div>
-    <div class="item-group">
-      <h3>スペシャル対象メンバー</h3>
-      <textarea id="specialMembersInput" placeholder="例: 小田さくら, 上國料萌衣"></textarea>
-    </div>
+
     <div class="modal-actions">
       <button id="cancelEdit">キャンセル</button>
       <button id="saveEdit">保存</button>
@@ -84,132 +133,106 @@ body { font-family: Arial, sans-serif; text-align: center; background: #000; col
 </div>
 
 <script>
-window.addEventListener('DOMContentLoaded', function() {
-const groups = {
-  all: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
-        "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花",
-        "段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲",
-        "谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏",
-        "島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花",
-        "斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心",
-        "橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"],
-  momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴"],
-  angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
-  juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
-  tsubaki: ["谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
-  beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
-  ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
-  rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
-};
-let members = groups.all;
-let counts = { SR:0, R:0, N:0 };
-let history = [];
-let specialMembers = [];
-const rarities = [
-  { type:"N", rate:65 },
-  { type:"R", rate:30 },
-  { type:"SR",rate:5 }
-];
-let itemsConfig = { N:["缶バッジ","ステッカー"], R:["キーホルダー"], SR:["BIGアクリルスタンド"] };
-const videoEl = document.getElementById("gachaVideo");
-const overlayEl = document.getElementById("overlay");
-const counterEl = document.getElementById("counter");
-const histEl = document.getElementById("history");
-function selectGroup(g){ members = groups[g]; }
-function updateCounter(){ counterEl.innerText = `SR:${counts.SR}個 / R:${counts.R}個 / N:${counts.N}個`; }
-function getRandomRarity(){ let r=Math.random()*100, sum=0; for(let x of rarities){ sum+=x.rate; if(r<=sum) return x.type; } return rarities[rarities.length-1].type; }
-function drawGacha() {
-  const rarity = getRandomRarity();
-  const itemArr = itemsConfig[rarity];
-  let candidateItems = [];
-  for (const member of members) {
-    for (const item of itemArr) {
-      candidateItems.push({ member, item, isSpecial: false });
-      if (specialMembers.includes(member)) {
-        candidateItems.push({ member, item: item + "（スペシャルVer）", isSpecial: true });
-      }
-    }
-  }
-  const chosen = candidateItems[Math.floor(Math.random() * candidateItems.length)];
-  let textClass = "white-text";
-  if (rarity === "R") textClass = "gold-text";
-  if (rarity === "SR" || chosen.isSpecial) textClass = "rainbow-text";
-  const displayText = `<div class="${textClass}">${chosen.member}
-${rarity}-${chosen.item}</div>`;
-  videoEl.src = "scene_2.mp4";
-  videoEl.loop = false;
-  overlayEl.style.opacity = 0;
-  overlayEl.innerHTML = "";
-  videoEl.onended = () => {
-    videoEl.src = rarity === "SR" ? "scene_3_rarity_A.mp4" : rarity === "R" ? "scene_3_rarity_B.mp4" : "scene_3_rarity_C.mp4";
-    videoEl.loop = true;
-    videoEl.play();
-    setTimeout(() => {
-      overlayEl.innerHTML = displayText;
-      overlayEl.style.opacity = 1;
-      counts[rarity]++;
-      history.push({ member: chosen.member, rarity, item: chosen.item });
-      updateCounter();
-    }, 200);
+  // メンバーリスト
+  const groups = {
+    all: [
+      "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生",
+      "櫻井梨央","井上春華","弓桁朱琴","上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季",
+      "下井谷幸穂","後藤花","段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良",
+      "遠藤彩加里","川嶋美楓","谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃",
+      "石井泉羽","村田結生","土居楓奏","島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫",
+      "平井美葉","里吉うたの","小林萌花","斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも",
+      "筒井澪心","橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"
+    ],
+    momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生"],
+    angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
+    juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
+    tsubaki: ["谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
+    beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
+    ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
+    rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
   };
-  videoEl.play();
-}
-videoEl.addEventListener("click", drawGacha);
-document.getElementById("showHistoryButton").addEventListener("click", ()=>{
-  histEl.style.display = histEl.style.display === "block" ? "none" : "block";
-  if (histEl.style.display === "block") {
-    histEl.innerHTML = history.map(h => {
-      const cls = h.item.includes("（スペシャルVer）") ? "rainbow-text" : h.rarity === "SR" ? "rainbow-text" : h.rarity === "R" ? "gold-text" : "white-text";
-      return `<div class="${cls}">${h.member}: ${h.rarity}-${h.item}</div>`;
-    }).join("");
+
+  let members = groups.all;
+  let itemsConfig = { N: ["缶バッジ", "ステッカー"], R: ["キーホルダー"], SR: ["BIGアクリルスタンド"] };
+
+  const specialModeCheckbox = document.getElementById("specialMode");
+
+  function selectGroup(g) {
+    members = groups[g];
   }
-});
-document.getElementById("resetButton").addEventListener("click", ()=>{
-  counts = { SR:0, R:0, N:0 };
-  history = [];
-  updateCounter();
-  histEl.style.display = "none";
-  histEl.innerHTML = "";
-});
-updateCounter();
-const modal = document.getElementById("itemModal"), btnEdit = document.getElementById("editItemsButton"), btnSave = document.getElementById("saveEdit"), btnCancel = document.getElementById("cancelEdit");
-function populateModal() {
-  ["N","R","SR"].forEach(rty => {
-    const cont = document.getElementById(`list-${rty}`);
-    cont.innerHTML = "";
-    itemsConfig[rty].forEach(name => {
+
+  // アイテム編集モーダルを開く
+  function populateModal() {
+    ["N", "R", "SR"].forEach(rty => {
+      const cont = document.getElementById(`list-${rty}`);
+      cont.innerHTML = "";
+      itemsConfig[rty].forEach(name => {
+        const inp = document.createElement("input");
+        inp.value = name;
+        cont.appendChild(inp);
+      });
+    });
+  }
+
+  // アイテム追加時にスペシャルVerの追加
+  document.querySelectorAll("#itemModal .add").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const r = btn.dataset.rarity;
       const inp = document.createElement("input");
-      inp.value = name;
-      cont.appendChild(inp);
+      inp.placeholder = "アイテム名を入力";
+      document.getElementById(`list-${r}`).appendChild(inp);
+      
+      if (specialModeCheckbox.checked) {
+        // スペシャルVerアイテムを追加
+        const specialInp = document.createElement("input");
+        specialInp.placeholder = "スペシャルVerアイテム名を入力";
+        document.getElementById(`list-${r}`).appendChild(specialInp);
+      }
     });
   });
-  document.getElementById("specialMembersInput").value = specialMembers.join(", ");
-}
-document.querySelectorAll("#itemModal .add").forEach(btn => btn.addEventListener("click", ()=>{
-  const r = btn.dataset.rarity;
-  const inp = document.createElement("input");
-  inp.placeholder = "アイテム名を入力";
-  document.getElementById(`list-${r}`).appendChild(inp);
-}));
-btnEdit.addEventListener("click", ()=>{
-  populateModal();
-  modal.style.display = "flex";
-});
-btnCancel.addEventListener("click", ()=>{
-  modal.style.display = "none";
-});
-btnSave.addEventListener("click", ()=>{
-  ["N","R","SR"].forEach(rty => {
-    const vals = Array.from(document.querySelectorAll(`#list-${rty} input`)).map(i => i.value.trim()).filter(v => v);
-    if (vals.length) itemsConfig[rty] = vals;
+
+  // 保存時にスペシャルVerを反映
+  const btnSave = document.getElementById("saveEdit");
+  btnSave.addEventListener("click", () => {
+    ["N", "R", "SR"].forEach(rty => {
+      const vals = Array.from(document.querySelectorAll(`#list-${rty} input`))
+        .map(i => i.value.trim())
+        .filter(v => v);
+      if (vals.length) itemsConfig[rty] = vals;
+    });
+
+    if (specialModeCheckbox.checked) {
+      ["N", "R", "SR"].forEach(rty => {
+        const list = document.getElementById(`list-${rty}`);
+        const specialItems = Array.from(list.querySelectorAll("input"))
+          .filter(inp => inp.placeholder.includes("スペシャルVer"))
+          .map(inp => inp.value.trim());
+        
+        specialItems.forEach(item => {
+          if (item) {
+            itemsConfig[rty].push(`${item} スペシャルVer`);
+          }
+        });
+      });
+    }
+
+    modal.style.display = "none";
+    alert("出現アイテム設定を更新しました！");
   });
-  const spInput = document.getElementById("specialMembersInput").value;
-  specialMembers = spInput.split(/[
-,、,]+/).map(name => name.trim()).filter(name => name);
-  modal.style.display = "none";
-  alert("出現アイテム設定を更新しました！");
-});
-});
+
+  // アイテム編集ボタンのイベント
+  const modal = document.getElementById("itemModal");
+  const btnEdit = document.getElementById("editItemsButton");
+  btnEdit.addEventListener("click", () => {
+    populateModal();
+    modal.style.display = "flex";
+  });
+
+  const btnCancel = document.getElementById("cancelEdit");
+  btnCancel.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
 </script>
 
 </body>
