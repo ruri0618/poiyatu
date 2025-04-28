@@ -84,6 +84,7 @@ body { font-family: Arial, sans-serif; text-align: center; background: #000; col
 </div>
 
 <script>
+window.addEventListener('DOMContentLoaded', function() {
 const groups = {
   all: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
         "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花",
@@ -207,6 +208,7 @@ btnSave.addEventListener("click", ()=>{
 ,、,]+/).map(name => name.trim()).filter(name => name);
   modal.style.display = "none";
   alert("出現アイテム設定を更新しました！");
+});
 });
 </script>
 
