@@ -76,19 +76,23 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     const resultItem = { rarity, member, item };
     results.push(resultItem);
 
-    if (untilSR && rarity === "SR") {
-      srHit = true;
-      if (targetMember && member === targetMember) {
-        oshiResult = resultItem;
-      } else if (!targetMember) {
-        oshiResult = resultItem;
+    if (untilSR) {
+      if (targetMember) {
+        if (rarity === "SR" && member === targetMember) {
+          srHit = true;
+          oshiResult = resultItem;
+          break;
+        }
+      } else {
+        if (rarity === "SR") {
+          srHit = true;
+          break;
+        }
       }
-      break;
     }
     count++;
   } while (count < times || untilSR);
 
-  // 推しSRなら結果から除外
   if (oshiResult) {
     results = results.filter(r => !(r.member === oshiResult.member && r.rarity === oshiResult.rarity && r.item === oshiResult.item));
   }
@@ -99,11 +103,10 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     const oa = order[a.rarity] ?? order[a.item] ?? 4;
     const ob = order[b.rarity] ?? order[b.item] ?? 4;
     if (oa !== ob) return oa - ob;
-    // 同じレアリティ内はメンバー順
     return members.indexOf(a.member) - members.indexOf(b.member);
   });
 
-  // displayを生成
+  // display生成
   results = results.map(r => {
     if (r.rarity === "SR") {
       return { ...r, display: `<span class="rainbow-text">${r.rarity}：${r.member} - ${r.item}</span>` };
@@ -121,7 +124,9 @@ function drawGacha(times, untilSR = false, targetMember = null) {
   let displayText = results.map(r => r.display).join("<br>");
   if (untilSR && srHit) {
     const totalCost = count * 500;
-    displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
+    displayText = `🎉✨🎊 ${count}回で` +
+                  (targetMember ? `${targetMember} のSR` : `SR`) +
+                  `が出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
   }
   document.getElementById("result").innerHTML = displayText;
 }
