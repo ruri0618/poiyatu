@@ -1,188 +1,210 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>ハロプロ モバガチャ2025</title>
-<style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #000; color: #fff; }
-    .group-buttons { margin-bottom: 20px; }
-    .group-buttons button { margin: 5px; padding: 10px 15px; font-size: 14px; cursor: pointer; }
-    .video-frame {
-        width: 135%;
-        max-width: 900px;
-        aspect-ratio: 16 / 9;
-        background: #000;
-        position: relative;
-        overflow: visible;
-        margin: 0 auto 120px auto; /* ボタン表示スペース確保 */
-        display: block;
+  <meta charset="UTF-8">
+  <title>ハロプロ モバガチャ2025</title>
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; }
+    #item-editor {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 16px;
+      border: 1px solid #ccc;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .video-frame video {
-        width: 100%; height: 100%; object-fit: cover;
-        position: relative; z-index: 0;
+    #item-editor h2 { margin-top: 0; text-align: center; }
+    .section { margin-bottom: 16px; }
+    .section h3 {
+      margin: 8px 0;
+      font-size: 16px;
+      color: #333;
     }
-    .overlay {
-        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        font-size: 30px; font-weight: bold; color: white;
-        text-shadow: 2px 2px 4px #000; pointer-events: none;
-        white-space: pre-line; opacity: 0; transition: opacity 1s;
-        z-index: 2;
+    .items, .probs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
     }
-    .counter-overlay {
-        position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-        background: rgba(0,0,0,0.6); color: #fff;
-        padding: 6px 12px; border-radius: 8px; font-size: 16px;
-        white-space: nowrap; z-index: 2;
+    .items input, .probs input {
+      flex: 1 1 120px;
+      padding: 4px 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-    .video-controls {
-        position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
-        z-index: 2;
+    .add-item {
+      margin-top: 4px;
+      padding: 4px 12px;
+      cursor: pointer;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 4px;
     }
-    .video-controls button {
-        margin: 0 8px; padding: 8px 16px; font-size: 14px; cursor: pointer;
+    #apply-names {
+      display: block;
+      margin: 16px auto;
+      padding: 8px 24px;
+      cursor: pointer;
+      border: none;
+      background: #28a745;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 16px;
     }
-    .white-text { color: white; }
-    .gold-text { color: gold; }
-    .rainbow-text {
-        background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-        -webkit-background-clip: text; color: transparent;
-        animation: rainbow 3s infinite;
+    #gacha-button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 32px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      background: #17a2b8;
+      color: #fff;
+      border-radius: 4px;
     }
-    #history {
-        margin-top: 20px; text-align: center;
-        background: rgba(255,255,255,0.1);
-        padding: 10px; border-radius: 10px;
-        max-width: 600px; margin: 20px auto;
-        display: none;
+    #gacha-result {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 24px;
+      color: #007;
+      white-space: pre-wrap;
     }
-</style>
+    #canvas {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+      min-height: 200px;
+      border: 2px dashed #ccc;
+      background: #fafafa;
+      text-align: center;
+      color: #999;
+      line-height: 200px;
+    }
+  </style>
 </head>
 <body>
-<h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
-<div class="group-buttons">
-    <button onclick="selectGroup('all')">全員</button>
-    <button onclick="selectGroup('momusu')">モーニング娘。</button>
-    <button onclick="selectGroup('angerme')">アンジュルム</button>
-    <button onclick="selectGroup('juice')">Juice=Juice</button>
-    <button onclick="selectGroup('tsubaki')">つばきファクトリー</button>
-    <button onclick="selectGroup('beyooooonds')">BEYOOOOONDS</button>
-    <button onclick="selectGroup('ocha')">OCHA NORMA</button>
-    <button onclick="selectGroup('rose')">ロージークロニクル</button>
-</div>
-<div class="video-frame">
-    <video id="gachaVideo" src="scene_1.mp4" autoplay loop muted playsinline></video>
-    <div id="overlay" class="overlay"></div>
-    <div id="counter" class="counter-overlay"></div>
-    <div class="video-controls">
-        <button id="showHistoryButton">獲得アイテム一覧</button>
-        <button id="resetButton">リセット</button>
+
+<section id="item-editor">
+  <h2>ガチャ設定</h2>
+
+  <!-- 確率編集 -->
+  <div class="section" id="prob-editor">
+    <h3>レアリティ確率（合計100％）</h3>
+    <div class="probs">
+      <input type="number" id="prob-n"  placeholder="N(%)"  value="80" min="0" max="100">
+      <input type="number" id="prob-r"  placeholder="R(%)"  value="15" min="0" max="100">
+      <input type="number" id="prob-sr" placeholder="SR(%)" value="5"  min="0" max="100">
     </div>
-</div>
-<div id="history"></div>
+  </div>
+
+  <!-- アイテム名編集 -->
+  <div class="section rarity-editor" data-rarity="1">
+    <h3>Nアイテム</h3>
+    <div class="items">
+      <input type="text" placeholder="アイテム名を入力" value="缶バッジ">
+      <input type="text" placeholder="アイテム名を入力" value="ステッカー">
+    </div>
+    <button class="add-item">＋Nアイテムを追加</button>
+  </div>
+
+  <div class="section rarity-editor" data-rarity="2">
+    <h3>Rアイテム</h3>
+    <div class="items">
+      <input type="text" placeholder="アイテム名を入力" value="キーホルダー">
+    </div>
+    <button class="add-item">＋Rアイテムを追加</button>
+  </div>
+
+  <div class="section rarity-editor" data-rarity="3">
+    <h3>SRアイテム</h3>
+    <div class="items">
+      <input type="text" placeholder="アイテム名を入力" value="BIGアクリルスタンド">
+    </div>
+    <button class="add-item">＋SRアイテムを追加</button>
+  </div>
+
+  <button id="apply-names">設定を反映する</button>
+</section>
+
+<div id="canvas">ここにプレビューや結果を表示</div>
+
+<button id="gacha-button">ガチャを回す</button>
+<div id="gacha-result"></div>
+
 <script>
-const groups = {
-    all: [
-        "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
-        "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花",
-        "段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良","遠藤彩加里","川嶋美楓",
-        "谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生",
-        "土居楓奏","島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの",
-        "小林萌花","斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心",
-        "橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"
-    ],
-    momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴"],
-    angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
-    juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
-    tsubaki: ["谷本安美","小野瑞歩","小野田紗桜","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
-    beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
-    ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
-    rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
-};
-let members = groups.all;
-let counts = { SR: 0, R: 0, N: 0 };
-let history = [];
-const rarities = [
-    { type: "N", rate: 65 },
-    { type: "R", rate: 30 },
-    { type: "SR", rate: 5 }
-];
-const videoElement = document.getElementById("gachaVideo");
-const overlayElement = document.getElementById("overlay");
-const counterElement = document.getElementById("counter");
-const resetButton = document.getElementById("resetButton");
-const showHistoryButton = document.getElementById("showHistoryButton");
-const historyElement = document.getElementById("history");
+  let rarityWeights = {1: 0.80, 2: 0.15, 3: 0.05};
+  let prizes = [];
 
-function selectGroup(group) {
-    members = groups[group];
-}
+  function rebuildPrizes() {
+    const list = [];
+    document.querySelectorAll('.rarity-editor').forEach(sec => {
+      const rarity = +sec.dataset.rarity;
+      sec.querySelectorAll('input[type="text"]').forEach((inp, idx) => {
+        list.push({ id: `${rarity}-${idx}`, name: inp.value.trim() || inp.placeholder, rarity });
+      });
+    });
+    prizes = list;
+  }
 
-function updateCounter() {
-    counterElement.innerText = `SR: ${counts.SR}個 / R: ${counts.R}個 / N: ${counts.N}個`;
-}
-
-function getRandomRarity() {
-    let rand = Math.random() * 100;
-    let sum = 0;
-    for (let rarity of rarities) {
-        sum += rarity.rate;
-        if (rand <= sum) return rarity.type;
+  function updateProbabilities() {
+    const n = parseFloat(document.getElementById('prob-n').value)  || 0;
+    const r = parseFloat(document.getElementById('prob-r').value)  || 0;
+    const sr= parseFloat(document.getElementById('prob-sr').value) || 0;
+    const sum = n + r + sr;
+    if (sum !== 100) {
+      alert(`確率の合計が100%ではありません（現在 ${sum}%）。`);
+      return false;
     }
-    return rarities[rarities.length - 1].type;
-}
+    rarityWeights = {1: n/100, 2: r/100, 3: sr/100};
+    return true;
+  }
 
-function drawGacha() {
-    const member = members[Math.floor(Math.random() * members.length)];
-    const rarity = getRandomRarity();
-    let item = "";
-    if (rarity === "N") item = Math.random() < 0.5 ? "缶バッジ" : "ステッカー";
-    else if (rarity === "R") item = "キーホルダー";
-    else if (rarity === "SR") item = "BIGアクリルスタンド";
+  document.querySelectorAll('.add-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sec = btn.closest('.rarity-editor');
+      const cont = sec.querySelector('.items');
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.placeholder = 'アイテム名を入力';
+      cont.appendChild(inp);
+    });
+  });
 
-    const displayText = `<div class="white-text">${member}\n${rarity}-${item}</div>`;
+  document.getElementById('apply-names').addEventListener('click', () => {
+    if (!updateProbabilities()) return;
+    rebuildPrizes();
+    alert(
+      '設定を反映しました！\n\n' +
+      `確率 → N:${(rarityWeights[1]*100).toFixed(1)}% ` +
+               `R:${(rarityWeights[2]*100).toFixed(1)}% ` +
+               `SR:${(rarityWeights[3]*100).toFixed(1)}%\n\n` +
+      prizes.map(p => 
+        `${p.rarity===1?'N':p.rarity===2?'R':'SR'}: ${p.name}`
+      ).join('\n')
+    );
+  });
 
-    videoElement.src = "scene_2.mp4";
-    videoElement.loop = false;
-    overlayElement.style.opacity = 0;
-    overlayElement.innerHTML = "";
-
-    videoElement.onended = () => {
-        videoElement.src = rarity === "SR" ? "scene_3_rarity_A.mp4" : rarity === "R" ? "scene_3_rarity_B.mp4" : "scene_3_rarity_C.mp4";
-        videoElement.loop = true;
-        videoElement.play();
-        setTimeout(() => {
-            overlayElement.innerHTML = displayText;
-            overlayElement.style.opacity = 1;
-            counts[rarity]++;
-            history.push({ member, rarity, item });
-            updateCounter();
-        }, 200);
-    };
-
-    videoElement.play();
-}
-
-videoElement.addEventListener("click", drawGacha);
-showHistoryButton.addEventListener("click", () => {
-    if (historyElement.style.display === "none" || historyElement.style.display === "") {
-        historyElement.style.display = "block";
-        historyElement.innerHTML = history.map(h => {
-            let cls = h.rarity === "SR" ? "rainbow-text" : h.rarity === "R" ? "gold-text" : "white-text";
-            return `<div class="${cls}">${h.member}: ${h.rarity}-${h.item}</div>`;
-        }).join("");
-    } else {
-        historyElement.style.display = "none";
+  function drawGacha() {
+    const r = Math.random();
+    let cum = 0, chosen = 1;
+    for (const [rar, w] of Object.entries(rarityWeights)) {
+      cum += w;
+      if (r < cum) { chosen = +rar; break; }
     }
-});
-resetButton.addEventListener("click", () => {
-    counts = { SR: 0, R: 0, N: 0 };
-    history = [];
-    updateCounter();
-    historyElement.style.display = "none";
-    historyElement.innerHTML = "";
-});
+    const same = prizes.filter(p => p.rarity === chosen);
+    return same[Math.floor(Math.random() * same.length)];
+  }
 
-updateCounter();
+  document.getElementById('gacha-button').addEventListener('click', () => {
+    if (!prizes.length) rebuildPrizes();
+    const res = drawGacha();
+    document.getElementById('gacha-result').textContent =
+      `─── ガチャ結果 ───\n` +
+      `${res.rarity===1?'N':res.rarity===2?'R':'SR'}：${res.name}`;
+  });
+
+  // 初期化
+  rebuildPrizes();
 </script>
-</body>
-</html>
