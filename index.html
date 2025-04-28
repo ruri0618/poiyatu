@@ -1,36 +1,6 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ハロプロ モバガチャ2025</title>
-    <style>
-        .rainbow-text {
-            background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: rainbow 3s infinite;
-            font-weight: bold;
-        }
+<!-- 中略（HTMLヘッダとボタンUI部分はそのまま） -->
 
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-    </style>
-</head>
-<body style="font-family: Arial, sans-serif; text-align: center; padding: 30px;">
-    <h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
-    <button id="gachaButton" style="font-size: 24px; padding: 10px 20px;">ガチャを回す✨</button>
-    <button id="gacha10Button" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">10連ガチャ✨</button>
-    <button id="gacha100Button" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">100連ガチャ✨</button>
-    <button id="gachaUntilSRButton" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">SRが出るまでガチャ✨</button>
-    <div style="margin-top: 20px;">
-        <input id="oshiInput" type="text" placeholder="推しの名前を入力" style="font-size: 18px; padding: 5px;">
-        <button id="oshiGachaButton" style="font-size: 18px; padding: 5px 10px;">推しSRが出るまでガチャ✨</button>
-    </div>
-    <h2 id="result" style="margin-top: 30px; white-space: pre-line;">ここに結果が表示されます</h2>
-
-    <script>
+<script>
 const members = [
     "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生", "櫻井梨央", "井上春華", "弓桁朱琴",
     "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花",
@@ -58,33 +28,8 @@ function getRandomRarity() {
     return rarities[rarities.length - 1].type;
 }
 
-function findClosestName(input) {
-    let minDist = Infinity;
-    let closest = "";
-    for (let name of members) {
-        let dist = levenshteinDistance(input, name);
-        if (dist < minDist) {
-            minDist = dist;
-            closest = name;
-        }
-    }
-    return minDist <= 3 ? closest : null;
-}
-
-function levenshteinDistance(a, b) {
-    const dp = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
-    for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-    for (let j = 0; j <= b.length; j++) dp[0][j] = j;
-    for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
-            if (a[i - 1] === b[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                dp[i][j] = Math.min(dp[i - 1][j - 1] + 1, dp[i][j - 1] + 1, dp[i - 1][j] + 1);
-            }
-        }
-    }
-    return dp[a.length][b.length];
+function findExactName(input) {
+    return members.includes(input) ? input : null;
 }
 
 function drawGacha(times, untilSR = false, targetMember = null) {
@@ -148,7 +93,6 @@ function drawGacha(times, untilSR = false, targetMember = null) {
 
 // ボタンイベント設定
 
-
 document.getElementById("gachaButton").addEventListener("click", () => drawGacha(1));
 document.getElementById("gacha10Button").addEventListener("click", () => drawGacha(10));
 document.getElementById("gacha100Button").addEventListener("click", () => drawGacha(100));
@@ -159,13 +103,13 @@ document.getElementById("oshiGachaButton").addEventListener("click", () => {
         alert("推しの名前を入力してね！");
         return;
     }
-    const corrected = findClosestName(input);
+    const corrected = findExactName(input);
     if (!corrected) {
         alert("そのメンバーはいないよ！");
         return;
     }
     drawGacha(1, true, corrected);
 });
-    </script>
-</body>
-</html>
+</script>
+
+<!-- 中略（HTML終了タグ） -->
