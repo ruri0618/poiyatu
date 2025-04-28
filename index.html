@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ハロプロ モバガチャ2025</title>
-  <style>
+<meta charset="UTF-8">
+<title>ハロプロ モバガチャ2025</title>
+<style>
     body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #000; color: #fff; }
     .group-buttons { margin-bottom: 20px; }
     .group-buttons button { margin: 5px; padding: 10px 15px; font-size: 14px; cursor: pointer; }
     .video-frame {
-      width: 135%; max-width: 900px; aspect-ratio: 16/9;
-      background: #000; position: relative; overflow: visible;
-      margin: 0 auto 120px; display: block;
+        width: 135%; max-width: 900px; aspect-ratio: 16/9;
+        background: #000; position: relative; overflow: visible;
+        margin: 0 auto 120px; display: block;
     }
     .video-frame video { width: 100%; height: 100%; object-fit: cover; z-index: 0; position: relative; }
     .overlay {
-      position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-      font-size:30px; font-weight:bold; color:#fff; text-shadow:2px 2px 4px #000;
-      white-space:pre-line; pointer-events:none; opacity:0; transition:opacity 1s; z-index:2;
+        position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+        font-size:30px; font-weight:bold; color:#fff; text-shadow:2px 2px 4px #000;
+        white-space:pre-line; pointer-events:none; opacity:0; transition:opacity 1s; z-index:2;
     }
     .counter-overlay {
-      position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-      background:rgba(0,0,0,0.6); color:#fff; padding:6px 12px; border-radius:8px; font-size:16px; z-index:2;
+        position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+        background:rgba(0,0,0,0.6); color:#fff; padding:6px 12px; border-radius:8px; font-size:16px; z-index:2;
     }
     .video-controls {
-      position:absolute; bottom:-60px; left:50%; transform:translateX(-50%); z-index:2;
+        position:absolute; bottom:-60px; left:50%; transform:translateX(-50%); z-index:2;
     }
     .video-controls button {
-      margin:0 8px; padding:8px 16px; font-size:14px; cursor:pointer;
+        margin:0 8px; padding:8px 16px; font-size:14px; cursor:pointer;
     }
     .white-text { color:white; }
     .gold-text  { color:gold; }
     .rainbow-text {
-      background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-      -webkit-background-clip: text; color:transparent;
-      animation: rainbow 3s infinite;
+        background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
+        -webkit-background-clip: text; color:transparent;
+        animation: rainbow 3s infinite;
     }
     #history {
-      display:none; margin:20px auto; max-width:600px;
-      background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
+        display:none; margin:20px auto; max-width:600px;
+        background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
     }
     /* モーダル */
     #itemModal {
@@ -65,7 +65,7 @@
     .modal-actions button {
       margin-left: 8px; padding:6px 12px; font-size:14px; cursor:pointer;
     }
-  </style>
+</style>
 </head>
 <body>
 
@@ -139,38 +139,82 @@
 </div>
 
 <script>
-  // メンバーリスト
+  //―――― 初期データ定義
   const groups = {
     all: [
-      "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生",
-      "櫻井梨央", "井上春華", "弓桁朱琴", "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季",
-      "下井谷幸穂", "後藤花", "段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲", "石山咲良",
-      "遠藤彩加里", "川嶋美楓", "谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃",
-      "石井泉羽", "村田結生", "土居楓奏", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波", "清野桃々姫",
-      "平井美葉", "里吉うたの", "小林萌花", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫", "西﨑美空", "北原もも",
-      "筒井澪心", "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ", "島川波菜", "上村麗菜", "相馬優芽"
+      "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
+      "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花",
+      "段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良","遠藤彩加里","川嶋美楓",
+      "谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生",
+      "土居楓奏","島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの",
+      "小林萌花","斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心",
+      "橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"
     ],
-    momusu: ["生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生"],
-    angerme: ["上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花"],
-    juice: ["段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲"],
-    tsubaki: ["谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃", "石井泉羽", "村田結生", "土居楓奏"],
-    beyooooonds: ["島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波", "清野桃々姫", "平井美葉", "里吉うたの", "小林萌花"],
-    ocha: ["斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫", "西﨑美空", "北原もも", "筒井澪心"],
-    rose: ["橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ", "島川波菜", "上村麗菜", "相馬優芽"]
+    momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴"],
+    angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
+    juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
+    tsubaki: ["谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
+    beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
+    ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
+    rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
   };
-
   let members = groups.all;
-  let itemsConfig = { N: ["缶バッジ", "ステッカー"], R: ["キーホルダー"], SR: ["BIGアクリルスタンド"] };
 
+  let counts = { SR:0, R:0, N:0 };
+  let history = [];
+  const rarities = [
+    { type:"N", rate:65 },
+    { type:"R", rate:30 },
+    { type:"SR",rate:5 }
+  ];
+  let itemsConfig = { N:["缶バッジ","ステッカー"], R:["キーホルダー"], SR:["BIGアクリルスタンド"] };
+
+  const videoEl   = document.getElementById("gachaVideo");
+  const overlayEl = document.getElementById("overlay");
+  const counterEl = document.getElementById("counter");
+  const histEl    = document.getElementById("history");
+
+  function selectGroup(g){ members = groups[g]; }
+  function updateCounter(){ counterEl.innerText = `SR:${counts.SR}個 / R:${counts.R}個 / N:${counts.N}個`; }
+  function getRandomRarity(){ let r=Math.random()*100, sum=0; for(let x of rarities){ sum+=x.rate; if(r<=sum) return x.type; } return rarities[rarities.length-1].type; }
+
+  function drawGacha(){
+    const member = members[Math.floor(Math.random()*members.length)];
+    const rarity = getRandomRarity();
+    const itemArr = itemsConfig[rarity];
+    const item    = itemArr[Math.floor(Math.random()*itemArr.length)];
+    const displayText = `<div class=\"white-text\">${member}\n${rarity}-${item}</div>`;
+
+    videoEl.src = "scene_2.mp4"; videoEl.loop=false;
+    overlayEl.style.opacity=0; overlayEl.innerHTML="";
+    videoEl.onended=()=>{ 
+      videoEl.src = rarity==="SR"?"scene_3_rarity_A.mp4": rarity==="R"?"scene_3_rarity_B.mp4":"scene_3_rarity_C.mp4"; 
+      videoEl.loop=true; videoEl.play();
+      setTimeout(()=>{ overlayEl.innerHTML=displayText; overlayEl.style.opacity=1; counts[rarity]++; history.push({member,rarity,item}); updateCounter(); },200); 
+    };
+    videoEl.play();
+  }
+  videoEl.addEventListener("click", drawGacha);
+
+  // 編集モーダルのスペシャルモード
   const specialModeCheckbox = document.getElementById("specialMode");
   const memberInputGroup = document.getElementById("memberInputGroup");
   const memberNameInput = document.getElementById("memberName");
 
-  function selectGroup(g) {
-    members = groups[g];
-  }
+  specialModeCheckbox.addEventListener("change", () => {
+    if (specialModeCheckbox.checked) {
+      memberInputGroup.style.display = "block";
+    } else {
+      memberInputGroup.style.display = "none";
+    }
+  });
 
-  // アイテム編集モーダルを開く
+  // アイテム編集ボタンのイベント
+  const modal = document.getElementById("itemModal");
+  const btnEdit = document.getElementById("editItemsButton");
+  const btnCancel = document.getElementById("cancelEdit");
+  const btnSave = document.getElementById("saveEdit");
+
   function populateModal() {
     ["N", "R", "SR"].forEach(rty => {
       const cont = document.getElementById(`list-${rty}`);
@@ -183,34 +227,21 @@
     });
   }
 
-  // アイテム追加時にスペシャルVerの追加
-  document.querySelectorAll("#itemModal .add").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const r = btn.dataset.rarity;
-      const inp = document.createElement("input");
-      inp.placeholder = "アイテム名を入力";
-      document.getElementById(`list-${r}`).appendChild(inp);
-      
-      if (specialModeCheckbox.checked) {
-        // スペシャルVerアイテムを追加
-        const specialInp = document.createElement("input");
-        specialInp.placeholder = "スペシャルVerアイテム名を入力";
-        document.getElementById(`list-${r}`).appendChild(specialInp);
-      }
-    });
-  });
-
-  // スペシャルモードがチェックされたとき、メンバー名の入力フィールドを表示
-  specialModeCheckbox.addEventListener("change", () => {
+  document.querySelectorAll("#itemModal .add").forEach(btn => btn.addEventListener("click", () => {
+    const r = btn.dataset.rarity;
+    const inp = document.createElement("input");
+    inp.placeholder = "アイテム名を入力";
+    document.getElementById(`list-${r}`).appendChild(inp);
+    
     if (specialModeCheckbox.checked) {
-      memberInputGroup.style.display = "block";
-    } else {
-      memberInputGroup.style.display = "none";
+      const specialInp = document.createElement("input");
+      specialInp.placeholder = "スペシャルVerアイテム名を入力";
+      document.getElementById(`list-${r}`).appendChild(specialInp);
     }
-  });
+  }));
 
-  // 保存時にスペシャルVerを反映
-  const btnSave = document.getElementById("saveEdit");
+  btnEdit.addEventListener("click", () => { populateModal(); modal.style.display = "flex"; });
+  btnCancel.addEventListener("click", () => { modal.style.display = "none"; });
   btnSave.addEventListener("click", () => {
     ["N", "R", "SR"].forEach(rty => {
       const vals = Array.from(document.querySelectorAll(`#list-${rty} input`))
@@ -241,18 +272,27 @@
     alert("出現アイテム設定を更新しました！");
   });
 
-  // アイテム編集ボタンのイベント
-  const modal = document.getElementById("itemModal");
-  const btnEdit = document.getElementById("editItemsButton");
-  btnEdit.addEventListener("click", () => {
-    populateModal();
-    modal.style.display = "flex";
+  // アイテム一覧表示ボタン
+  document.getElementById("showHistoryButton").addEventListener("click", () => {
+    histEl.style.display = histEl.style.display === "block" ? "none" : "block";
+    if (histEl.style.display === "block") {
+      histEl.innerHTML = history.map(h => {
+        const cls = h.rarity === "SR" ? "rainbow-text" : h.rarity === "R" ? "gold-text" : "white-text";
+        return `<div class="${cls}">${h.member}: ${h.rarity}-${h.item}</div>`;
+      }).join("");
+    }
   });
 
-  const btnCancel = document.getElementById("cancelEdit");
-  btnCancel.addEventListener("click", () => {
-    modal.style.display = "none";
+  document.getElementById("resetButton").addEventListener("click", () => {
+    counts = { SR: 0, R: 0, N: 0 };
+    history = [];
+    updateCounter();
+    histEl.style.display = "none";
+    histEl.innerHTML = "";
   });
+
+  updateCounter();
+
 </script>
 
 </body>
