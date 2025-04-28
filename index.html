@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>ハロプロ モバガチャ2025</title>
-<style>
+  <meta charset="UTF-8">
+  <title>ハロプロ モバガチャ2025</title>
+  <style>
     body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #000; color: #fff; }
     .group-buttons { margin-bottom: 20px; }
     .group-buttons button { margin: 5px; padding: 10px 15px; font-size: 14px; cursor: pointer; }
     .video-frame {
-        width: 135%; max-width: 900px; aspect-ratio: 16/9;
-        background: #000; position: relative; overflow: visible;
-        margin: 0 auto 120px; display: block;
+      width: 135%; max-width: 900px; aspect-ratio: 16/9;
+      background: #000; position: relative; overflow: visible;
+      margin: 0 auto 120px; display: block;
     }
     .video-frame video { width: 100%; height: 100%; object-fit: cover; z-index: 0; position: relative; }
     .overlay {
-        position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-        font-size:30px; font-weight:bold; color:#fff; text-shadow:2px 2px 4px #000;
-        white-space:pre-line; pointer-events:none; opacity:0; transition:opacity 1s; z-index:2;
+      position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      font-size:30px; font-weight:bold; color:#fff; text-shadow:2px 2px 4px #000;
+      white-space:pre-line; pointer-events:none; opacity:0; transition:opacity 1s; z-index:2;
     }
     .counter-overlay {
-        position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-        background:rgba(0,0,0,0.6); color:#fff; padding:6px 12px; border-radius:8px; font-size:16px; z-index:2;
+      position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,0.6); color:#fff; padding:6px 12px; border-radius:8px; font-size:16px; z-index:2;
     }
     .video-controls {
-        position:absolute; bottom:-60px; left:50%; transform:translateX(-50%); z-index:2;
+      position:absolute; bottom:-60px; left:50%; transform:translateX(-50%); z-index:2;
     }
     .video-controls button {
-        margin:0 8px; padding:8px 16px; font-size:14px; cursor:pointer;
+      margin:0 8px; padding:8px 16px; font-size:14px; cursor:pointer;
     }
     .white-text { color:white; }
     .gold-text  { color:gold; }
     .rainbow-text {
-        background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-        -webkit-background-clip: text; color:transparent;
-        animation: rainbow 3s infinite;
+      background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
+      -webkit-background-clip: text; color:transparent;
+      animation: rainbow 3s infinite;
     }
     #history {
-        display:none; margin:20px auto; max-width:600px;
-        background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
+      display:none; margin:20px auto; max-width:600px;
+      background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
     }
     /* モーダル */
     #itemModal {
@@ -65,7 +65,7 @@
     .modal-actions button {
       margin-left: 8px; padding:6px 12px; font-size:14px; cursor:pointer;
     }
-</style>
+  </style>
 </head>
 <body>
 
@@ -101,12 +101,11 @@
   <div class="modal-content">
     <h2>出現アイテム編集</h2>
 
-<!-- スペシャルモードのチェックボックス -->
-<div class="item-group">
-  <label for="specialMode">スペシャルモード</label>
-  <input type="checkbox" id="specialMode"> <!-- デフォルトでオフにするためchecked属性を削除 -->
-</div>
-
+    <!-- スペシャルモードのチェックボックス -->
+    <div class="item-group">
+      <label for="specialMode">スペシャルモード</label>
+      <input type="checkbox" id="specialMode"> <!-- チェックボックスのデフォルト状態はオフ -->
+    </div>
 
     <!-- メンバー名入力フィールド -->
     <div class="item-group" id="memberInputGroup" style="display: none;">
@@ -251,13 +250,13 @@
       if (vals.length) itemsConfig[rty] = vals;
     });
 
+    // スペシャルモードでのアイテム追加
     if (specialModeCheckbox.checked) {
       const memberName = memberNameInput.value.trim();
       if (memberName) {
         ["N", "R", "SR"].forEach(rty => {
           const list = document.getElementById(`list-${rty}`);
           const specialItems = Array.from(list.querySelectorAll("input"))
-            .filter(inp => inp.placeholder.includes("スペシャルVer"))
             .map(inp => inp.value.trim());
           
           specialItems.forEach(item => {
@@ -293,8 +292,6 @@
   });
 
   updateCounter();
-
 </script>
 
-</body>
-</html>
+</
