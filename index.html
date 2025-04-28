@@ -35,6 +35,10 @@
         -webkit-background-clip: text; color:transparent;
         animation: rainbow 3s infinite;
     }
+    @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
     #history {
         display:none; margin:20px auto; max-width:600px;
         background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
@@ -119,6 +123,12 @@
       <button class="add" data-rarity="SR">＋SRアイテムを追加</button>
     </div>
 
+    <!-- ★スペシャル対象メンバー入力欄を追加 -->
+    <div class="item-group">
+      <h3>スペシャル対象メンバー</h3>
+      <textarea id="specialMembersInput" placeholder="例: 小田さくら, 上國料萌衣" rows="3" style="width:100%; background:#333; color:white; border:1px solid #444; border-radius:4px; padding:6px;"></textarea>
+    </div>
+
     <div class="modal-actions">
       <button id="cancelEdit">キャンセル</button>
       <button id="saveEdit">保存</button>
@@ -127,79 +137,153 @@
 </div>
 
 <script>
-  //―――― 初期データ定義
-  const groups = {
-    all: [
-      "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
-      "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花",
-      "段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良","遠藤彩加里","川嶋美楓",
-      "谷本安美","小野瑞歩","小野田紗桞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生",
-      "土居楓奏","島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの",
-      "小林萌花","斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心",
-      "橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"
-    ],
-    momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴"],
-    angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
-    juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
-    tsubaki: ["谷本安美","小野瑞歩","小野田紗桞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
-    beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
-    ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
-    rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
-  };
-  let members = groups.all;
+//―――― 初期データ定義
+const groups = {
+  all: [...], // （ここはあなたの元データと同じ）
+  momusu: [...],
+  angerme: [...],
+  juice: [...],
+  tsubaki: [...],
+  beyooooonds: [...],
+  ocha: [...],
+  rose: [...]
+};
+let members = groups.all;
 
-  let counts = { SR:0, R:0, N:0 };
-  let history = [];
-  const rarities = [
-    { type:"N", rate:65 },
-    { type:"R", rate:30 },
-    { type:"SR",rate:5 }
-  ];
-  let itemsConfig = { N:["缶バッジ","ステッカー"], R:["キーホルダー"], SR:["BIGアクリルスタンド"] };
+let counts = { SR:0, R:0, N:0 };
+let history = [];
+let specialMembers = [];  // ★追加
+const rarities = [
+  { type:"N", rate:65 },
+  { type:"R", rate:30 },
+  { type:"SR",rate:5 }
+];
+let itemsConfig = { N:["缶バッジ","ステッカー"], R:["キーホルダー"], SR:["BIGアクリルスタンド"] };
 
-  const videoEl   = document.getElementById("gachaVideo");
-  const overlayEl = document.getElementById("overlay");
-  const counterEl = document.getElementById("counter");
-  const histEl    = document.getElementById("history");
+const videoEl   = document.getElementById("gachaVideo");
+const overlayEl = document.getElementById("overlay");
+const counterEl = document.getElementById("counter");
+const histEl    = document.getElementById("history");
 
-  function selectGroup(g){ members = groups[g]; }
-  function updateCounter(){ counterEl.innerText = `SR:${counts.SR}個 / R:${counts.R}個 / N:${counts.N}個`; }
-  function getRandomRarity(){ let r=Math.random()*100, sum=0; for(let x of rarities){ sum+=x.rate; if(r<=sum) return x.type; } return rarities[rarities.length-1].type; }
+function selectGroup(g){ members = groups[g]; }
+function updateCounter(){ counterEl.innerText = `SR:${counts.SR}個 / R:${counts.R}個 / N:${counts.N}個`; }
+function getRandomRarity(){ let r=Math.random()*100, sum=0; for(let x of rarities){ sum+=x.rate; if(r<=sum) return x.type; } return rarities[rarities.length-1].type; }
 
-  function drawGacha(){
-    const member = members[Math.floor(Math.random()*members.length)];
-    const rarity = getRandomRarity();
-    const itemArr = itemsConfig[rarity];
-    const item    = itemArr[Math.floor(Math.random()*itemArr.length)];
-    const displayText = `<div class=\"white-text\">${member}\n${rarity}-${item}</div>`;
+//―――― drawGacha改修版
+function drawGacha() {
+  const rarity = getRandomRarity();
+  const itemArr = itemsConfig[rarity];
+  
+  let candidateItems = [];
 
-    videoEl.src = "scene_2.mp4"; videoEl.loop=false;
-    overlayEl.style.opacity=0; overlayEl.innerHTML="";
-    videoEl.onended=()=>{
-      videoEl.src = rarity==="SR"?"scene_3_rarity_A.mp4": rarity==="R"?"scene_3_rarity_B.mp4":"scene_3_rarity_C.mp4";
-      videoEl.loop=true; videoEl.play();
-      setTimeout(()=>{ overlayEl.innerHTML=displayText; overlayEl.style.opacity=1; counts[rarity]++; history.push({member,rarity,item}); updateCounter(); },200);
-    };
-    videoEl.play();
+  for (const member of members) {
+    for (const item of itemArr) {
+      candidateItems.push({ member, item, isSpecial: false });
+      if (specialMembers.includes(member)) {
+        candidateItems.push({ member, item: item + "（スペシャルVer）", isSpecial: true });
+      }
+    }
   }
-  videoEl.addEventListener("click", drawGacha);
-  document.getElementById("showHistoryButton").addEventListener("click", ()=>{
-    histEl.style.display = histEl.style.display==="block"?"none":"block";
-    if(histEl.style.display==="block"){ histEl.innerHTML = history.map(h=>{const cls=h.rarity==="SR"?"rainbow-text":h.rarity==="R"?"gold-text":"white-text"; return `<div class=\"${cls}\">${h.member}: ${h.rarity}-${h.item}</div>`; }).join(""); }
+
+  const chosen = candidateItems[Math.floor(Math.random() * candidateItems.length)];
+
+  let textClass = "white-text";
+  if (rarity === "R") textClass = "gold-text";
+  if (rarity === "SR") textClass = "rainbow-text";
+  if (chosen.isSpecial) textClass = "rainbow-text";
+
+  const displayText = `<div class="${textClass}">${chosen.member}\n${rarity}-${chosen.item}</div>`;
+
+  videoEl.src = "scene_2.mp4";
+  videoEl.loop = false;
+  overlayEl.style.opacity = 0;
+  overlayEl.innerHTML = "";
+
+  videoEl.onended = () => {
+    videoEl.src = rarity === "SR" ? "scene_3_rarity_A.mp4"
+              : rarity === "R"  ? "scene_3_rarity_B.mp4"
+              :                   "scene_3_rarity_C.mp4";
+    videoEl.loop = true;
+    videoEl.play();
+
+    setTimeout(() => {
+      overlayEl.innerHTML = displayText;
+      overlayEl.style.opacity = 1;
+      counts[rarity]++;
+      history.push({ member: chosen.member, rarity, item: chosen.item });
+      updateCounter();
+    }, 200);
+  };
+  videoEl.play();
+}
+
+//―――― イベント登録
+videoEl.addEventListener("click", drawGacha);
+
+document.getElementById("showHistoryButton").addEventListener("click", ()=>{
+  histEl.style.display = histEl.style.display==="block"?"none":"block";
+  if(histEl.style.display==="block"){
+    histEl.innerHTML = history.map(h=>{
+      const cls = h.item.includes("（スペシャルVer）") ? "rainbow-text"
+                : h.rarity==="SR" ? "rainbow-text"
+                : h.rarity==="R"  ? "gold-text"
+                : "white-text";
+      return `<div class="${cls}">${h.member}: ${h.rarity}-${h.item}</div>`;
+    }).join("");
+  }
+});
+document.getElementById("resetButton").addEventListener("click", ()=>{
+  counts={SR:0,R:0,N:0}; history=[]; updateCounter(); histEl.style.display="none"; histEl.innerHTML="";
+});
+updateCounter();
+
+//―――― モーダル処理
+const modal=document.getElementById("itemModal"),
+      btnEdit=document.getElementById("editItemsButton"),
+      btnSave=document.getElementById("saveEdit"),
+      btnCancel=document.getElementById("cancelEdit");
+
+function populateModal(){
+  ["N","R","SR"].forEach(rty=>{
+    const cont=document.getElementById(`list-${rty}`);
+    cont.innerHTML="";
+    itemsConfig[rty].forEach(name=>{
+      const inp=document.createElement("input");
+      inp.value=name;
+      cont.appendChild(inp);
+    });
   });
-  document.getElementById("resetButton").addEventListener("click", ()=>{ counts={SR:0,R:0,N:0}; history=[]; updateCounter(); histEl.style.display="none"; histEl.innerHTML=""; });
-  updateCounter();
+  document.getElementById("specialMembersInput").value = specialMembers.join(", ");
+}
 
-  //―――― モーダル
-  const modal=document.getElementById("itemModal"), btnEdit=document.getElementById("editItemsButton"), btnSave=document.getElementById("saveEdit"), btnCancel=document.getElementById("cancelEdit");
+document.querySelectorAll("#itemModal .add").forEach(btn=>
+  btn.addEventListener("click", ()=>{
+    const r=btn.dataset.rarity;
+    const inp=document.createElement("input");
+    inp.placeholder="アイテム名を入力";
+    document.getElementById(`list-${r}`).appendChild(inp);
+  })
+);
 
-  function populateModal(){["N","R","SR"].forEach(rty=>{const cont=document.getElementById(`list-${rty}`); cont.innerHTML=""; itemsConfig[rty].forEach(name=>{const inp=document.createElement("input"); inp.value=name; cont.appendChild(inp); }); }); }
+btnEdit.addEventListener("click", ()=>{
+  populateModal();
+  modal.style.display="flex";
+});
+btnCancel.addEventListener("click", ()=>{ modal.style.display="none"; });
+btnSave.addEventListener("click", ()=>{
+  ["N","R","SR"].forEach(rty=>{
+    const vals=Array.from(document.querySelectorAll(`#list-${rty} input`))
+      .map(i=>i.value.trim())
+      .filter(v=>v);
+    if(vals.length) itemsConfig[rty]=vals;
+  });
 
-  document.querySelectorAll("#itemModal .add").forEach(btn=>btn.addEventListener("click", ()=>{const r=btn.dataset.rarity; const inp=document.createElement("input"); inp.placeholder="アイテム名を入力"; document.getElementById(`list-${r}`).appendChild(inp); }));
+  const spInput = document.getElementById("specialMembersInput").value;
+  specialMembers = spInput.split(/[\n,、,]+/).map(name=>name.trim()).filter(name=>name);
 
-  btnEdit.addEventListener("click", ()=>{ populateModal(); modal.style.display="flex"; });
-  btnCancel.addEventListener("click", ()=>{ modal.style.display="none"; });
-  btnSave.addEventListener("click", ()=>{["N","R","SR"].forEach(rty=>{const vals=Array.from(document.querySelectorAll(`#list-${rty} input`)).map(i=>i.value.trim()).filter(v=>v); if(vals.length) itemsConfig[rty]=vals; }); modal.style.display="none"; alert("出現アイテム設定を更新しました！"); });
+  modal.style.display="none";
+  alert("出現アイテム設定を更新しました！");
+});
 </script>
 
 </body>
