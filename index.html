@@ -11,7 +11,6 @@
       animation: rainbow 3s infinite;
       font-weight: bold;
     }
-
     @keyframes rainbow {
       0% { filter: hue-rotate(0deg); }
       100% { filter: hue-rotate(360deg); }
@@ -20,26 +19,25 @@
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center; padding: 30px;">
   <h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
-  <button id="gachaButton" style="font-size: 24px; padding: 10px 20px;">ガチャを回す✨</button>
-  <button id="gacha10Button" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">10連ガチャ✨</button>
-  <button id="gacha100Button" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">100連ガチャ✨</button>
-  <button id="gachaUntilSRButton" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">SRが出るまでガチャ✨</button>
-  <div style="margin-top: 20px;">
-    <input id="oshiInput" type="text" placeholder="推しの名前を入力" style="font-size: 18px; padding: 5px;">
-    <button id="oshiGachaButton" style="font-size: 18px; padding: 5px 10px;">推しSRが出るまでガチャ✨</button>
+  <button id="gachaButton" style="font-size:24px; padding:10px 20px;">ガチャを回す✨</button>
+  <button id="gacha10Button" style="font-size:20px; padding:8px 16px; margin-top:10px;">10連ガチャ✨</button>
+  <button id="gacha100Button" style="font-size:20px; padding:8px 16px; margin-top:10px;">100連ガチャ✨</button>
+  <button id="gachaUntilSRButton" style="font-size:20px; padding:8px 16px; margin-top:10px;">SRが出るまでガチャ✨</button>
+  <div style="margin-top:20px;">
+    <input id="oshiInput" type="text" placeholder="推しの名前を入力" style="font-size:18px; padding:5px;">
+    <button id="oshiGachaButton" style="font-size:18px; padding:5px 10px;">推しSRが出るまでガチャ✨</button>
   </div>
-  <h2 id="result" style="margin-top: 30px; white-space: pre-line;">ここに結果が表示されます</h2>
-
+  <h2 id="result" style="margin-top:30px; white-space:pre-line;">ここに結果が表示されます</h2>
 <script>
 const members = [
-  "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生", "櫻井梨央", "井上春華", "弓桁朱琴",
-  "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花",
-  "段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲", "石山咲良", "遠藤彩加里",
-  "川嶋美楓", "谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃",
-  "石井泉羽", "村田結生", "土居楓奏", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波",
-  "清野桃々姫", "平井美葉", "里吉うたの", "小林萌花", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫",
-  "西﨑美空", "北原もも", "筒井澪心", "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ",
-  "島川波菜", "上村麗菜", "相馬優芽"
+  "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
+  "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花",
+  "段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良","遠藤彩加里",
+  "川嶋美楓","谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃",
+  "石井泉羽","村田結生","土居楓奏","島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波",
+  "清野桃々姫","平井美葉","里吉うたの","小林萌花","斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫",
+  "西﨑美空","北原もも","筒井澪心","橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ",
+  "島川波菜","上村麗菜","相馬優芽"
 ];
 
 const rarities = [
@@ -72,48 +70,40 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     const member = members[Math.floor(Math.random() * members.length)];
     const rarity = getRandomRarity();
     let item = "";
-    let rarityTag = rarity;
-
     if (rarity === "N") item = Math.random() < 0.5 ? "缶バッジ" : "ステッカー";
     else if (rarity === "R") item = "キーホルダー";
     else if (rarity === "SR") item = "BIGアクリルスタンド";
-
-    const resultItem = { rarity: rarityTag, member: member, item: item };
+    const resultItem = { rarity, member, item };
     results.push(resultItem);
 
-    if (untilSR && rarity === "SR" && (!targetMember || member === targetMember)) {
+    if (untilSR && rarity === "SR") {
       srHit = true;
       if (targetMember && member === targetMember) {
+        oshiResult = resultItem;
+      } else if (!targetMember) {
         oshiResult = resultItem;
       }
       break;
     }
-
     count++;
   } while (count < times || untilSR);
 
-  // 推しを除外
+  // 推しSRなら結果から除外
   if (oshiResult) {
-    results = results.filter(r => !(r.member === oshiResult.member && r.rarity === oshiResult.rarity));
+    results = results.filter(r => !(r.member === oshiResult.member && r.rarity === oshiResult.rarity && r.item === oshiResult.item));
   }
 
-  // ソート（レアリティ → Nアイテム順 → メンバー順）
+  // レアリティ優先ソート
   results.sort((a, b) => {
-    const rarityOrder = { "SR": 0, "R": 1, "缶バッジ": 2, "ステッカー": 3 };
-    const aOrder = rarityOrder[a.rarity];
-    const bOrder = rarityOrder[b.rarity];
-    if (aOrder !== bOrder) return aOrder - bOrder;
-    // Nのアイテム内で缶バッジ→ステッカー
-    if (a.rarity === "缶バッジ" || a.rarity === "ステッカー") {
-      const itemOrder = { "缶バッジ": 0, "ステッカー": 1 };
-      const cmp = itemOrder[a.rarity] - itemOrder[b.rarity];
-      return cmp !== 0 ? cmp : members.indexOf(a.member) - members.indexOf(b.member);
-    }
-    // SR・Rはメンバー順
+    const order = { "SR": 0, "R": 1, "缶バッジ": 2, "ステッカー": 3 };
+    const oa = order[a.rarity] ?? order[a.item] ?? 4;
+    const ob = order[b.rarity] ?? order[b.item] ?? 4;
+    if (oa !== ob) return oa - ob;
+    // 同じレアリティ内はメンバー順
     return members.indexOf(a.member) - members.indexOf(b.member);
   });
 
-  // display生成
+  // displayを生成
   results = results.map(r => {
     if (r.rarity === "SR") {
       return { ...r, display: `<span class="rainbow-text">${r.rarity}：${r.member} - ${r.item}</span>` };
@@ -122,13 +112,12 @@ function drawGacha(times, untilSR = false, targetMember = null) {
     }
   });
 
-  // 推しを一番上に強調
+  // 推し優先表示
   if (oshiResult) {
     oshiResult.display = `<span style="font-size:24px; font-weight:bold; color:#FF69B4;">${oshiResult.rarity}：${oshiResult.member} - ${oshiResult.item}</span>`;
     results.unshift(oshiResult);
   }
 
-  // 結果表示
   let displayText = results.map(r => r.display).join("<br>");
   if (untilSR && srHit) {
     const totalCost = count * 500;
@@ -137,23 +126,18 @@ function drawGacha(times, untilSR = false, targetMember = null) {
   document.getElementById("result").innerHTML = displayText;
 }
 
-// ボタンイベント設定
-document.getElementById("gachaButton").addEventListener("click", () => drawGacha(1));
-document.getElementById("gacha10Button").addEventListener("click", () => drawGacha(10));
-document.getElementById("gacha100Button").addEventListener("click", () => drawGacha(100));
-document.getElementById("gachaUntilSRButton").addEventListener("click", () => drawGacha(1, true));
+// イベント設定
+["gachaButton","gacha10Button","gacha100Button","gachaUntilSRButton"].forEach((id, idx) => {
+  const times = idx === 0 ? 1 : idx === 1 ? 10 : idx === 2 ? 100 : 1;
+  const untilSR = id === "gachaUntilSRButton";
+  document.getElementById(id).addEventListener("click", () => drawGacha(times, untilSR));
+});
+
 document.getElementById("oshiGachaButton").addEventListener("click", () => {
   const input = document.getElementById("oshiInput").value.trim();
-  if (!input) {
-    alert("推しの名前を入力してね！");
-    return;
-  }
   const corrected = findExactName(input);
-  if (!corrected) {
-    alert("そのメンバーはいないよ！");
-    return;
-  }
-  drawGacha(1, true, corrected);
+  if (!corrected) return alert("そのメンバーはいないよ！");
+  drawGacha(9999, true, corrected);
 });
 </script>
 </body>
