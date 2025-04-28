@@ -109,7 +109,23 @@ function drawGacha(times, untilSR = false, targetMember = null) {
   document.getElementById("result").innerHTML = displayText;
 }
 
-// 以下ボタン設定はそのまま
+document.getElementById("gachaButton").addEventListener("click", () => drawGacha(1));
+document.getElementById("gacha10Button").addEventListener("click", () => drawGacha(10));
+document.getElementById("gacha100Button").addEventListener("click", () => drawGacha(100));
+document.getElementById("gachaUntilSRButton").addEventListener("click", () => drawGacha(1, true));
+document.getElementById("oshiGachaButton").addEventListener("click", () => {
+  const input = document.getElementById("oshiInput").value.trim();
+  if (!input) {
+    alert("推しの名前を入力してね！");
+    return;
+  }
+  const corrected = findExactName(input);
+  if (!corrected) {
+    alert("そのメンバーはいないよ！");
+    return;
+  }
+  drawGacha(1, true, corrected);
+});
 </script>
 </body>
 </html>
