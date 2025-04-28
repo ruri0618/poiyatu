@@ -39,8 +39,7 @@
         display:none; margin:20px auto; max-width:600px;
         background:rgba(255,255,255,0.1); padding:10px; border-radius:10px; text-align:left;
     }
-    /*――――――――――――――――――――――――――*/
-    /* モーダル（最前面フォーム） */
+    /* モーダル */
     #itemModal {
       display: none;
       position: fixed;
@@ -72,10 +71,16 @@
 
 <h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
 
+<!-- グループ選択ボタン -->
 <div class="group-buttons">
-  <!-- 略: グループ選択ボタン -->
   <button onclick="selectGroup('all')">全員</button>
-  <!-- … -->
+  <button onclick="selectGroup('momusu')">モーニング娘。</button>
+  <button onclick="selectGroup('angerme')">アンジュルム</button>
+  <button onclick="selectGroup('juice')">Juice=Juice</button>
+  <button onclick="selectGroup('tsubaki')">つばきファクトリー</button>
+  <button onclick="selectGroup('beyooooonds')">BEYOOOOONDS</button>
+  <button onclick="selectGroup('ocha')">OCHA NORMA</button>
+  <button onclick="selectGroup('rose')">ロージークロニクル</button>
 </div>
 
 <div class="video-frame">
@@ -122,25 +127,51 @@
 </div>
 
 <script>
-  //―――――――――――――――― 初期データ
-  const groups = { /* 略: 各グループメンバー */ };
+  //―――― 初期データ定義
+  const groups = {
+    all: [
+      "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈",
+      "北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴",
+      "上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな",
+      "平山遊季","下井谷幸穂","後藤花","段原瑠々","井上玲音","工藤由愛",
+      "松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良","遠藤彩加里",
+      "川嶋美楓","谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心",
+      "八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏",
+      "島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波",
+      "清野桃々姫","平井美葉","里吉うたの","小林萌花","斉藤円香","広本瑠璃",
+      "米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心",
+      "橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ",
+      "島川波菜","上村麗菜","相馬優芽"
+    ],
+    momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生","櫻井梨央","井上春華","弓桁朱琴"],
+    angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
+    juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
+    tsubaki: ["谷本安美","小野瑞歩","小野田紗桜","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
+    beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
+    ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
+    rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
+  };
   let members = groups.all;
+
+  // カウント・履歴
   let counts = { SR:0, R:0, N:0 };
   let history = [];
+
+  // レアリティ設定
   const rarities = [
     { type:"N", rate:65 },
     { type:"R", rate:30 },
     { type:"SR",rate:5 }
   ];
 
-  // アイテム設定（動的に編集）
+  // アイテム設定（動的編集可能）
   let itemsConfig = {
     N: ["缶バッジ","ステッカー"],
     R: ["キーホルダー"],
     SR:["BIGアクリルスタンド"]
   };
 
-  //―――――――――――――――― 挙動定義（既存）
+  //―――― ヘルパー＆イベント
   const videoEl   = document.getElementById("gachaVideo");
   const overlayEl = document.getElementById("overlay");
   const counterEl = document.getElementById("counter");
@@ -194,6 +225,7 @@
   }
 
   videoEl.addEventListener("click", drawGacha);
+
   document.getElementById("showHistoryButton").addEventListener("click", ()=>{
     histEl.style.display = histEl.style.display==="block" ? "none" : "block";
     if(histEl.style.display==="block"){
@@ -203,19 +235,21 @@
       }).join("");
     }
   });
+
   document.getElementById("resetButton").addEventListener("click", ()=>{
     counts={SR:0,R:0,N:0}; history=[]; updateCounter();
     histEl.style.display="none"; histEl.innerHTML="";
   });
+
   updateCounter();
 
-  //―――――――――――――――― モーダル操作
-  const modal    = document.getElementById("itemModal");
-  const btnEdit  = document.getElementById("editItemsButton");
-  const btnSave  = document.getElementById("saveEdit");
-  const btnCancel= document.getElementById("cancelEdit");
+  //―――― モーダル操作
+  const modal     = document.getElementById("itemModal");
+  const btnEdit   = document.getElementById("editItemsButton");
+  const btnSave   = document.getElementById("saveEdit");
+  const btnCancel = document.getElementById("cancelEdit");
 
-  // モーダル内をアイテムConfigで初期化
+  // モーダル内の内容を itemsConfig から生成
   function populateModal(){
     ["N","R","SR"].forEach(rty=>{
       const container = document.getElementById(`list-${rty}`);
@@ -228,7 +262,7 @@
     });
   }
 
-  // 「＋追加」ボタン
+  // 追加ボタン
   document.querySelectorAll("#itemModal .add").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const r = btn.getAttribute("data-rarity");
@@ -242,18 +276,21 @@
     populateModal();
     modal.style.display = "flex";
   });
-  btnCancel.addEventListener("click", ()=>{ modal.style.display = "none"; });
+  btnCancel.addEventListener("click", ()=>{
+    modal.style.display = "none";
+  });
 
   btnSave.addEventListener("click", ()=>{
     ["N","R","SR"].forEach(rty=>{
       const vals = Array.from(
         document.querySelectorAll(`#list-${rty} input`)
       ).map(i=>i.value.trim()).filter(v=>v);
-      if(vals.length>0) itemsConfig[rty] = vals;
+      if(vals.length) itemsConfig[rty] = vals;
     });
     modal.style.display = "none";
     alert("アイテム設定を更新しました！");
   });
 </script>
+
 </body>
 </html>
