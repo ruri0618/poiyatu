@@ -13,11 +13,17 @@
         aspect-ratio: 16 / 9;
         background: #000;
         position: relative;
-        overflow: hidden;
-        margin: 0 auto 60px auto;
+        overflow: visible;
+        margin: 0 auto 80px auto;
         display: block;
     }
-    video { width: 100%; height: 100%; object-fit: cover; }
+    .video-frame video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: relative;
+        z-index: 0;
+    }
     .overlay {
         position: absolute;
         top: 50%; left: 50%;
@@ -31,11 +37,12 @@
         white-space: pre-line;
         opacity: 0;
         transition: opacity 1s;
+        z-index: 2;
     }
     /* カウンターを動画下に重ねる */
     .counter-overlay {
         position: absolute;
-        bottom: -40px;
+        bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.6);
@@ -44,6 +51,7 @@
         border-radius: 8px;
         font-size: 16px;
         white-space: nowrap;
+        z-index: 2;
     }
     .white-text { color: white; }
     .gold-text { color: gold; }
