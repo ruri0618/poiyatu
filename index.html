@@ -107,6 +107,12 @@
       <input type="checkbox" id="specialMode">
     </div>
 
+    <!-- メンバー名入力フィールド -->
+    <div class="item-group" id="memberInputGroup" style="display: none;">
+      <label for="memberName">メンバー名</label>
+      <input type="text" id="memberName" placeholder="メンバー名を入力">
+    </div>
+
     <div class="item-group" data-rarity="N">
       <h3>Nアイテム</h3>
       <div class="item-list" id="list-N"></div>
@@ -136,27 +142,29 @@
   // メンバーリスト
   const groups = {
     all: [
-      "生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生",
-      "櫻井梨央","井上春華","弓桁朱琴","上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季",
-      "下井谷幸穂","後藤花","段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲","石山咲良",
-      "遠藤彩加里","川嶋美楓","谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃",
-      "石井泉羽","村田結生","土居楓奏","島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫",
-      "平井美葉","里吉うたの","小林萌花","斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも",
-      "筒井澪心","橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"
+      "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生",
+      "櫻井梨央", "井上春華", "弓桁朱琴", "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季",
+      "下井谷幸穂", "後藤花", "段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲", "石山咲良",
+      "遠藤彩加里", "川嶋美楓", "谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃",
+      "石井泉羽", "村田結生", "土居楓奏", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波", "清野桃々姫",
+      "平井美葉", "里吉うたの", "小林萌花", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫", "西﨑美空", "北原もも",
+      "筒井澪心", "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ", "島川波菜", "上村麗菜", "相馬優芽"
     ],
-    momusu: ["生田衣梨奈","小田さくら","野中美希","牧野真莉愛","羽賀朱音","横山玲奈","北川莉央","岡村ほまれ","山﨑愛生"],
-    angerme: ["上國料萌衣","伊勢鈴蘭","橋迫鈴","川名凜","為永幸音","松本わかな","平山遊季","下井谷幸穂","後藤花"],
-    juice: ["段原瑠々","井上玲音","工藤由愛","松永里愛","有澤一華","入江里咲","江端妃咲"],
-    tsubaki: ["谷本安美","小野瑞歩","小野田紗栞","秋山眞緒","河西結心","八木栞","福田真琳","豫風瑠乃","石井泉羽","村田結生","土居楓奏"],
-    beyooooonds: ["島倉りか","西田汐里","江口紗耶","高瀬くるみ","前田こころ","岡村美波","清野桃々姫","平井美葉","里吉うたの","小林萌花"],
-    ocha: ["斉藤円香","広本瑠璃","米村姫良々","窪田七海","中山夏月姫","西﨑美空","北原もも","筒井澪心"],
-    rose: ["橋田歩果","吉田姫杷","小野田華凜","村越彩菜","植村葉純","松原ユリヤ","島川波菜","上村麗菜","相馬優芽"]
+    momusu: ["生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生"],
+    angerme: ["上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花"],
+    juice: ["段原瑠々", "井上玲音", "工藤由愛", "松永里愛", "有澤一華", "入江里咲", "江端妃咲"],
+    tsubaki: ["谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃", "石井泉羽", "村田結生", "土居楓奏"],
+    beyooooonds: ["島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波", "清野桃々姫", "平井美葉", "里吉うたの", "小林萌花"],
+    ocha: ["斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫", "西﨑美空", "北原もも", "筒井澪心"],
+    rose: ["橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ", "島川波菜", "上村麗菜", "相馬優芽"]
   };
 
   let members = groups.all;
   let itemsConfig = { N: ["缶バッジ", "ステッカー"], R: ["キーホルダー"], SR: ["BIGアクリルスタンド"] };
 
   const specialModeCheckbox = document.getElementById("specialMode");
+  const memberInputGroup = document.getElementById("memberInputGroup");
+  const memberNameInput = document.getElementById("memberName");
 
   function selectGroup(g) {
     members = groups[g];
@@ -192,6 +200,15 @@
     });
   });
 
+  // スペシャルモードがチェックされたとき、メンバー名の入力フィールドを表示
+  specialModeCheckbox.addEventListener("change", () => {
+    if (specialModeCheckbox.checked) {
+      memberInputGroup.style.display = "block";
+    } else {
+      memberInputGroup.style.display = "none";
+    }
+  });
+
   // 保存時にスペシャルVerを反映
   const btnSave = document.getElementById("saveEdit");
   btnSave.addEventListener("click", () => {
@@ -203,18 +220,21 @@
     });
 
     if (specialModeCheckbox.checked) {
-      ["N", "R", "SR"].forEach(rty => {
-        const list = document.getElementById(`list-${rty}`);
-        const specialItems = Array.from(list.querySelectorAll("input"))
-          .filter(inp => inp.placeholder.includes("スペシャルVer"))
-          .map(inp => inp.value.trim());
-        
-        specialItems.forEach(item => {
-          if (item) {
-            itemsConfig[rty].push(`${item} スペシャルVer`);
-          }
+      const memberName = memberNameInput.value.trim();
+      if (memberName) {
+        ["N", "R", "SR"].forEach(rty => {
+          const list = document.getElementById(`list-${rty}`);
+          const specialItems = Array.from(list.querySelectorAll("input"))
+            .filter(inp => inp.placeholder.includes("スペシャルVer"))
+            .map(inp => inp.value.trim());
+          
+          specialItems.forEach(item => {
+            if (item) {
+              itemsConfig[rty].push(`${memberName}の${item} スペシャルVer`);
+            }
+          });
         });
-      });
+      }
     }
 
     modal.style.display = "none";
